@@ -3,153 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🎵 リクエスト受付</title>
+  <title>トクサツ酒場 リクエスト受付</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-      background: #08080f;
-      color: #fff;
+      background: #ffffff;
+      color: #2c1a0e;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 20% 30%, rgba(120, 40, 200, 0.18) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 70%, rgba(200, 40, 120, 0.15) 0%, transparent 55%),
-        radial-gradient(ellipse at 55% 10%, rgba(40, 80, 220, 0.12) 0%, transparent 50%);
-      animation: bgPulse 10s ease-in-out infinite alternate;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    @keyframes bgPulse {
-      0%   { opacity: 0.7; transform: scale(1); }
-      100% { opacity: 1;   transform: scale(1.05); }
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
+    /* ── バナー ── */
+    .banner {
       width: 100%;
-      max-width: 460px;
+      display: block;
+    }
+    .banner img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
-    /* ── ヘッダー ── */
+    /* ── メインコンテンツ ── */
+    .content {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+    }
+
+    /* ── ヘッダーテキスト ── */
     .header {
       text-align: center;
-      margin-bottom: 28px;
-    }
-    .header .logo {
-      font-size: 52px;
-      display: block;
-      margin-bottom: 14px;
-      filter: drop-shadow(0 0 20px rgba(167,139,250,0.5));
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e8ddc8;
     }
     .header h1 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
-      letter-spacing: 0.08em;
-      background: linear-gradient(135deg, #a78bfa, #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
+      color: #2c1a0e;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      line-height: 1.4;
     }
-    .header p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.45);
-      line-height: 1.6;
-    }
-
-    /* ── カード ── */
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 22px;
-      padding: 28px 22px;
-      backdrop-filter: blur(12px);
+    .header .note {
+      font-size: 12px;
+      color: #7a6a55;
+      line-height: 1.7;
+      text-align: left;
+      background: #faf7f0;
+      border-left: 3px solid #c9a84c;
+      padding: 10px 12px;
+      border-radius: 0 6px 6px 0;
     }
 
     /* ── フォーム ── */
-    .form-group { margin-bottom: 20px; }
+    .form-group { margin-bottom: 18px; }
 
     .form-group label {
       display: block;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 8px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      color: #2c1a0e;
+      margin-bottom: 7px;
+      letter-spacing: 0.03em;
     }
-    .form-group label .req { color: #f472b6; margin-left: 3px; }
-    .form-group label .opt { color: rgba(255,255,255,0.25); font-size: 11px; margin-left: 4px; text-transform: none; }
+    .form-group label .req {
+      color: #c0392b;
+      margin-left: 3px;
+      font-size: 12px;
+    }
+    .form-group label .opt {
+      color: #aaa;
+      font-size: 11px;
+      font-weight: 400;
+      margin-left: 4px;
+    }
 
     .form-group input {
       width: 100%;
-      padding: 14px 16px;
-      background: rgba(255,255,255,0.07);
-      border: 1.5px solid rgba(255,255,255,0.12);
-      border-radius: 13px;
-      color: #fff;
+      padding: 13px 14px;
+      background: #ffffff;
+      border: 1.5px solid #d8cdb8;
+      border-radius: 8px;
+      color: #2c1a0e;
       font-size: 16px;
       font-family: inherit;
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
     }
-    .form-group input::placeholder { color: rgba(255,255,255,0.25); }
+    .form-group input::placeholder { color: #bbb; }
     .form-group input:focus {
       outline: none;
-      border-color: #a78bfa;
-      background: rgba(167,139,250,0.08);
-      box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+      border-color: #c9a84c;
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
     }
-    .form-group input.has-error { border-color: #f87171; }
+    .form-group input.has-error { border-color: #c0392b; }
 
     .err-msg {
       font-size: 12px;
-      color: #f87171;
-      margin-top: 6px;
+      color: #c0392b;
+      margin-top: 5px;
       display: none;
     }
     .err-msg.show { display: block; }
 
-    /* ── ボタン ── */
+    /* ── 送信ボタン ── */
     .submit-btn {
       width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #7c3aed, #be185d);
+      padding: 15px;
+      background: #2c1a0e;
       border: none;
-      border-radius: 14px;
-      color: #fff;
-      font-size: 17px;
+      border-radius: 8px;
+      color: #f5edd8;
+      font-size: 16px;
       font-weight: 800;
       font-family: inherit;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       cursor: pointer;
       margin-top: 6px;
-      transition: opacity 0.2s, transform 0.1s;
+      transition: background 0.2s, transform 0.1s;
       -webkit-appearance: none;
-      box-shadow: 0 4px 24px rgba(124,58,237,0.35);
     }
     .submit-btn:active { transform: scale(0.98); }
-    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .spinner {
       display: inline-block;
-      width: 17px; height: 17px;
-      border: 2px solid rgba(255,255,255,0.35);
-      border-top-color: #fff;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(245,237,216,0.4);
+      border-top-color: #f5edd8;
       border-radius: 50%;
       animation: spin 0.75s linear infinite;
       vertical-align: middle;
@@ -158,22 +142,18 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── 完了画面 ── */
-    .success-screen {
-      display: none;
-      text-align: center;
-    }
+    .success-screen { display: none; text-align: center; padding: 20px 0; }
     .success-screen.show { display: block; }
 
     .success-icon {
-      width: 76px; height: 76px;
-      background: linear-gradient(135deg, #7c3aed, #be185d);
+      width: 68px; height: 68px;
+      background: #2c1a0e;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 22px;
-      font-size: 34px;
-      box-shadow: 0 0 40px rgba(124,58,237,0.5);
+      margin: 0 auto 20px;
+      font-size: 30px;
       animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     @keyframes popIn {
@@ -184,23 +164,20 @@
     .success-screen h2 {
       font-size: 20px;
       font-weight: 800;
-      margin-bottom: 10px;
-      background: linear-gradient(135deg, #a78bfa, #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #2c1a0e;
+      margin-bottom: 8px;
     }
     .success-screen .sub {
-      color: rgba(255,255,255,0.5);
+      color: #7a6a55;
       font-size: 13px;
       line-height: 1.7;
       margin-bottom: 4px;
     }
 
     .summary-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 14px;
+      background: #faf7f0;
+      border: 1.5px solid #e8ddc8;
+      border-radius: 10px;
       padding: 14px 16px;
       margin: 20px 0;
       text-align: left;
@@ -210,60 +187,73 @@
       justify-content: space-between;
       align-items: flex-start;
       padding: 7px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid #e8ddc8;
       gap: 12px;
     }
     .summary-row:last-child { border-bottom: none; }
     .summary-label {
       font-size: 11px;
-      color: rgba(255,255,255,0.35);
+      color: #9a8a75;
       white-space: nowrap;
       min-width: 56px;
       padding-top: 1px;
     }
     .summary-value {
       font-size: 13px;
-      color: rgba(255,255,255,0.85);
+      color: #2c1a0e;
       text-align: right;
       word-break: break-all;
     }
 
     .another-btn {
       width: 100%;
-      padding: 14px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 13px;
-      color: rgba(255,255,255,0.6);
+      padding: 13px;
+      background: #fff;
+      border: 1.5px solid #d8cdb8;
+      border-radius: 8px;
+      color: #7a6a55;
       font-size: 14px;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.2s;
       -webkit-appearance: none;
     }
-    .another-btn:active { background: rgba(255,255,255,0.11); }
+    .another-btn:active { background: #faf7f0; }
 
     .form-view.hide { display: none; }
+
+    .divider {
+      height: 1px;
+      background: #e8ddc8;
+      margin: 20px 0;
+    }
   </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- フォーム画面 -->
-  <div class="form-view" id="formView">
-    <div class="header">
-      <span class="logo">🎵</span>
-      <h1>リクエスト受付</h1>
-      <p>聴きたい曲をリクエストしてください<br>できる限り演奏します！</p>
-    </div>
+  <!-- バナー画像 -->
+  <div class="banner">
+    <img src="./banner.png" alt="トクサツ酒場 リクエストボード">
+  </div>
 
-    <div class="card">
+  <div class="content">
+
+    <!-- フォーム画面 -->
+    <div class="form-view" id="formView">
+      <div class="header">
+        <h1>トクサツ酒場<br>リクエスト受付</h1>
+        <div class="note">
+          聴きたい曲をリクエストしてください。<br>
+          ※リクエストいただいてもかからない場合がありますのであらかじめご了承ください。
+        </div>
+      </div>
+
       <form id="requestForm" novalidate>
 
         <div class="form-group">
           <label>作品名<span class="req">*</span></label>
           <input type="text" id="workTitle"
-                 placeholder="例：鬼滅の刃、マクロス、オリジナルなど"
+                 placeholder="例：仮面ライダー、スーパー戦隊など"
                  maxlength="100" autocomplete="off">
           <div class="err-msg" id="workTitleErr">作品名を入力してください</div>
         </div>
@@ -271,7 +261,7 @@
         <div class="form-group">
           <label>曲名<span class="req">*</span></label>
           <input type="text" id="songTitle"
-                 placeholder="例：紅蓮華、ダイヤモンドクレバス"
+                 placeholder="例：Butter-Fly、forever love"
                  maxlength="100" autocomplete="off">
           <div class="err-msg" id="songTitleErr">曲名を入力してください</div>
         </div>
@@ -279,7 +269,7 @@
         <div class="form-group">
           <label>歌手・アーティスト<span class="req">*</span></label>
           <input type="text" id="artist"
-                 placeholder="例：LiSA、May'n"
+                 placeholder="例：石野陽子、影山ヒロノブ"
                  maxlength="100" autocomplete="off">
           <div class="err-msg" id="artistErr">歌手・アーティストを入力してください</div>
         </div>
@@ -292,30 +282,28 @@
         </div>
 
         <button type="submit" class="submit-btn" id="submitBtn">
-          リクエストを送る ♪
+          リクエストを送る
         </button>
+
       </form>
     </div>
+
+    <!-- 完了画面 -->
+    <div class="success-screen" id="successView">
+      <div class="success-icon">✓</div>
+      <h2>リクエスト受付完了！</h2>
+      <p class="sub">ありがとうございます。<br>演奏できるよう頑張ります！</p>
+
+      <div class="summary-box" id="summaryBox"></div>
+
+      <button class="another-btn" onclick="resetForm()">
+        別の曲もリクエストする
+      </button>
+    </div>
+
   </div>
-
-  <!-- 完了画面 -->
-  <div class="card success-screen" id="successView">
-    <div class="success-icon">✓</div>
-    <h2>リクエスト受付完了！</h2>
-    <p class="sub">ありがとうございます。<br>演奏できるよう頑張ります 🎶</p>
-
-    <div class="summary-box" id="summaryBox"></div>
-
-    <button class="another-btn" onclick="resetForm()">
-      別の曲もリクエストする
-    </button>
-  </div>
-
-</div>
 
 <script>
-  // ========================================
-  //  設定：GASのURLをここに貼り付けてください
   // ========================================
   const GAS_URL = 'https://script.google.com/macros/s/AKfycbwacbC0CDa_cInsMotMg7c1iZPh_A2PQG7WkzoBi86a9R2erTfvA8lgZyM2N4pXt5Yjtg/exec';
   // ========================================
@@ -332,7 +320,6 @@
     { id: 'artist',    errId: 'artistErr'    },
   ];
 
-  // エラー表示をクリア
   REQUIRED.forEach(({ id, errId }) => {
     document.getElementById(id).addEventListener('input', function () {
       this.classList.remove('has-error');
@@ -365,7 +352,7 @@
     } catch (_) {
       alert('送信に失敗しました。電波状況を確認してもう一度お試しください。');
       submitBtn.disabled = false;
-      submitBtn.innerHTML = 'リクエストを送る ♪';
+      submitBtn.innerHTML = 'リクエストを送る';
     }
   });
 
@@ -385,7 +372,6 @@
 
   function showSuccess(data) {
     formView.classList.add('hide');
-
     const rows = [
       { label: '作品名', value: data.workTitle },
       { label: '曲名',   value: data.songTitle },
@@ -398,7 +384,6 @@
          <span class="summary-value">${esc(r.value)}</span>
        </div>`
     ).join('');
-
     successView.classList.add('show');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -406,7 +391,7 @@
   function resetForm() {
     form.reset();
     submitBtn.disabled = false;
-    submitBtn.innerHTML = 'リクエストを送る ♪';
+    submitBtn.innerHTML = 'リクエストを送る';
     REQUIRED.forEach(({ id, errId }) => {
       document.getElementById(id).classList.remove('has-error');
       document.getElementById(errId).classList.remove('show');
