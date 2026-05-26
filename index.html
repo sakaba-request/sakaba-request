@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎵 リクエスト受付</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: #08080f;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(120, 40, 200, 0.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, rgba(200, 40, 120, 0.15) 0%, transparent 55%),
+        radial-gradient(ellipse at 55% 10%, rgba(40, 80, 220, 0.12) 0%, transparent 50%);
+      animation: bgPulse 10s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes bgPulse {
+      0%   { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 1;   transform: scale(1.05); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    /* ── ヘッダー ── */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .header .logo {
+      font-size: 52px;
+      display: block;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 0 20px rgba(167,139,250,0.5));
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+    }
+
+    /* ── カード ── */
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 22px;
+      padding: 28px 22px;
+      backdrop-filter: blur(12px);
+    }
+
+    /* ── フォーム ── */
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .form-group label .req { color: #f472b6; margin-left: 3px; }
+    .form-group label .opt { color: rgba(255,255,255,0.25); font-size: 11px; margin-left: 4px; text-transform: none; }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 13px;
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.25); }
+    .form-group input:focus {
+      outline: none;
+      border-color: #a78bfa;
+      background: rgba(167,139,250,0.08);
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+    }
+    .form-group input.has-error { border-color: #f87171; }
+
+    .err-msg {
+      font-size: 12px;
+      color: #f87171;
+      margin-top: 6px;
+      display: none;
+    }
+    .err-msg.show { display: block; }
+
+    /* ── ボタン ── */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #7c3aed, #be185d);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      font-family: inherit;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: opacity 0.2s, transform 0.1s;
+      -webkit-appearance: none;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+    }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .spinner {
+      display: inline-block;
+      width: 17px; height: 17px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── 完了画面 ── */
+    .success-screen {
+      display: none;
+      text-align: center;
+    }
+    .success-screen.show { display: block; }
+
+    .success-icon {
+      width: 76px; height: 76px;
+      background: linear-gradient(135deg, #7c3aed, #be185d);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+      font-size: 34px;
+      box-shadow: 0 0 40px rgba(124,58,237,0.5);
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-screen h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .success-screen .sub {
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 4px;
+    }
+
+    .summary-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin: 20px 0;
+      text-align: left;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      gap: 12px;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+      min-width: 56px;
+      padding-top: 1px;
+    }
+    .summary-value {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .another-btn {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 13px;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+      -webkit-appearance: none;
+    }
+    .another-btn:active { background: rgba(255,255,255,0.11); }
+
+    .form-view.hide { display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- フォーム画面 -->
+  <div class="form-view" id="formView">
+    <div class="header">
+      <span class="logo">🎵</span>
+      <h1>リクエスト受付</h1>
+      <p>聴きたい曲をリクエストしてください<br>できる限り演奏します！</p>
+    </div>
+
+    <div class="card">
+      <form id="requestForm" novalidate>
+
+        <div class="form-group">
+          <label>作品名<span class="req">*</span></label>
+          <input type="text" id="workTitle"
+                 placeholder="例：鬼滅の刃、マクロス、オリジナルなど"
+                 maxlength="100" autocomplete="off">
+          <div class="err-msg" id="workTitleErr">作品名を入力してください</div>
+        </div>
+
+        <div class="form-group">
+          <label>曲名<span class="req">*</span></label>
+          <input type="text" id="songTitle"
+                 placeholder="例：紅蓮華、ダイヤモンドクレバス"
+                 maxlength="100" autocomplete="off">
+          <div class="err-msg" id="songTitleErr">曲名を入力してください</div>
+        </div>
+
+        <div class="form-group">
+          <label>歌手・アーティスト<span class="req">*</span></label>
+          <input type="text" id="artist"
+                 placeholder="例：LiSA、May'n"
+                 maxlength="100" autocomplete="off">
+          <div class="err-msg" id="artistErr">歌手・アーティストを入力してください</div>
+        </div>
+
+        <div class="form-group">
+          <label>お名前<span class="opt">（任意）</span></label>
+          <input type="text" id="requesterName"
+                 placeholder="ニックネームでもOK！"
+                 maxlength="50" autocomplete="off">
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          リクエストを送る ♪
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 完了画面 -->
+  <div class="card success-screen" id="successView">
+    <div class="success-icon">✓</div>
+    <h2>リクエスト受付完了！</h2>
+    <p class="sub">ありがとうございます。<br>演奏できるよう頑張ります 🎶</p>
+
+    <div class="summary-box" id="summaryBox"></div>
+
+    <button class="another-btn" onclick="resetForm()">
+      別の曲もリクエストする
+    </button>
+  </div>
+
+</div>
+
+<script>
+  // ========================================
+  //  設定：GASのURLをここに貼り付けてください
+  // ========================================
+  const GAS_URL = 'YOUR_GAS_URL_HERE';
+  // ========================================
+
+  const form        = document.getElementById('requestForm');
+  const submitBtn   = document.getElementById('submitBtn');
+  const formView    = document.getElementById('formView');
+  const successView = document.getElementById('successView');
+  const summaryBox  = document.getElementById('summaryBox');
+
+  const REQUIRED = [
+    { id: 'workTitle', errId: 'workTitleErr' },
+    { id: 'songTitle', errId: 'songTitleErr' },
+    { id: 'artist',    errId: 'artistErr'    },
+  ];
+
+  // エラー表示をクリア
+  REQUIRED.forEach(({ id, errId }) => {
+    document.getElementById(id).addEventListener('input', function () {
+      this.classList.remove('has-error');
+      document.getElementById(errId).classList.remove('show');
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const payload = {
+      workTitle:     document.getElementById('workTitle').value.trim(),
+      songTitle:     document.getElementById('songTitle').value.trim(),
+      artist:        document.getElementById('artist').value.trim(),
+      requesterName: document.getElementById('requesterName').value.trim() || '匿名',
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span>送信中...';
+
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      showSuccess(payload);
+    } catch (_) {
+      alert('送信に失敗しました。電波状況を確認してもう一度お試しください。');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'リクエストを送る ♪';
+    }
+  });
+
+  function validate() {
+    let ok = true;
+    REQUIRED.forEach(({ id, errId }) => {
+      const el  = document.getElementById(id);
+      const err = document.getElementById(errId);
+      if (!el.value.trim()) {
+        el.classList.add('has-error');
+        err.classList.add('show');
+        ok = false;
+      }
+    });
+    return ok;
+  }
+
+  function showSuccess(data) {
+    formView.classList.add('hide');
+
+    const rows = [
+      { label: '作品名', value: data.workTitle },
+      { label: '曲名',   value: data.songTitle },
+      { label: '歌手',   value: data.artist },
+      { label: 'お名前', value: data.requesterName },
+    ];
+    summaryBox.innerHTML = rows.map(r =>
+      `<div class="summary-row">
+         <span class="summary-label">${r.label}</span>
+         <span class="summary-value">${esc(r.value)}</span>
+       </div>`
+    ).join('');
+
+    successView.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    form.reset();
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'リクエストを送る ♪';
+    REQUIRED.forEach(({ id, errId }) => {
+      document.getElementById(id).classList.remove('has-error');
+      document.getElementById(errId).classList.remove('show');
+    });
+    formView.classList.remove('hide');
+    successView.classList.remove('show');
+  }
+
+  function esc(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+  }
+</script>
+</body>
+</html>
