@@ -101,6 +101,26 @@
     }
     .form-group input.has-error { border-color: #c0392b; }
 
+    .form-group textarea {
+      width: 100%;
+      padding: 13px 14px;
+      background: #ffffff;
+      border: 1.5px solid #d8cdb8;
+      border-radius: 8px;
+      color: #2c1a0e;
+      font-size: 16px;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group textarea::placeholder { color: #bbb; }
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #c9a84c;
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+    }
+
     .err-msg {
       font-size: 12px;
       color: #c0392b;
@@ -281,6 +301,13 @@
                  maxlength="50" autocomplete="off">
         </div>
 
+        <div class="form-group">
+          <label>コメント<span class="opt">（任意）</span></label>
+          <textarea id="comment"
+                    placeholder="リクエストした理由やメッセージなどあれば"
+                    maxlength="200" rows="3"></textarea>
+        </div>
+
         <button type="submit" class="submit-btn" id="submitBtn">
           リクエストを送る
         </button>
@@ -336,6 +363,7 @@
       songTitle:     document.getElementById('songTitle').value.trim(),
       artist:        document.getElementById('artist').value.trim(),
       requesterName: document.getElementById('requesterName').value.trim() || '匿名',
+      comment:       document.getElementById('comment').value.trim(),
     };
 
     submitBtn.disabled = true;
@@ -377,6 +405,7 @@
       { label: '曲名',   value: data.songTitle },
       { label: '歌手',   value: data.artist },
       { label: 'お名前', value: data.requesterName },
+      ...(data.comment ? [{ label: 'コメント', value: data.comment }] : []),
     ];
     summaryBox.innerHTML = rows.map(r =>
       `<div class="summary-row">
